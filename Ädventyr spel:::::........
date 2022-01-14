@@ -1,0 +1,169 @@
+import random as rand
+import fälla as fälla
+
+
+class Monster ():
+    def __init__(self, name, strength):
+        self.name = name
+        self.strength = strength
+
+
+class Player:
+    def __init__(self, hp, strength, lvl, inventory=[]):
+        self.hp = hp
+        self.strength = strength
+        self.inventory = inventory
+        self.lvl = lvl
+
+    def change_hp(self, val):
+        self.hp += val
+
+    def change_strength(self, val):
+        self.strength += val
+
+class Item:
+    def __init__(self, name, strength_bonus, hp_bonus):
+        self.name = name
+        self.strength_bonus = strength_bonus
+        self.hp_bonus = hp_bonus
+
+
+def menu():
+    p1 = Player(10, 1, 1)
+    svar = ""
+    while svar != "q":
+
+        svar = input(
+            "vad vill du göra? Inv [i], Stats [s], Dörr [d], Avsluta [q] ")
+        if svar == "s":
+            print("strength", p1.strength)
+            print("hp", p1.hp)
+            print("lvl", p1.lvl)
+
+        elif svar == "i":
+            visainv(p1)
+
+        elif svar == "d":
+            door(p1)
+
+        if p1.hp < 1:
+            break
+
+
+def door(p1):
+    svar = ""
+    while svar != "q":
+        slumptal = rand.randint(0, 2)
+        listalängd = list(range(0, 2))
+        svar = input(
+            "\nYour standing in a room,There are three doors in the front of you, which one do you take? Left [l], Middle [m], Right [r], Avsluta [q] ")
+        if svar == "l":
+            if slumptal == 0:
+                p1 = fälla(p1)
+                return(p1)
+
+            elif slumptal == 1:
+                p1 = fåitem(p1)
+                return(p1)
+
+            elif slumptal == 2:
+                p1 = mötmonster(p1)
+                return(p1)
+
+        elif svar == "m":
+            if slumptal == 0:
+                p1 = fälla(p1)
+                return(p1)
+
+            elif slumptal == 1:
+                p1 = fåitem(p1)
+                return(p1)
+
+            elif slumptal == 2:
+                p1 = mötmonster(p1)
+                return(p1)
+
+        elif svar == "r":
+            if slumptal == 0:
+                p1 = fälla(p1)
+                return(p1)
+
+            elif slumptal == 1:
+                p1 = fåitem(p1)
+                return(p1)
+
+            elif slumptal == 2:
+                p1 = mötmonster(p1)
+                return(p1)
+
+
+def fälla(p1):
+    tal = rand.randint(1, 2)
+    if tal == 1:
+        print("Du gick på en spike-trap: du förlorar 5 hp")
+        p1.hp -= 10
+    elif tal == 2:
+        print("Du gick i en vattenpöl och blir blöt. Förlora 1 hp")
+        p1.hp -= 10
+    return p1
+
+
+def fåitem(p1):
+    print("du hittade en kaffe")
+    kaffe = Item("Kaffe", 2, 2)
+    p1.inventory.append(kaffe)
+    return p1
+
+
+def visainv(p1):
+    for item in p1.inventory:
+        print(item.name)
+
+    svar = ""
+    while svar != "q":
+        svar = input("\n vilket item vill du använda? [1] [2] [3]")
+
+        if svar == "1":
+            taget_item = list.pop(0)
+            p1.hp += taget_item.hp_bonus
+            p1.hp += taget_item.strength_bonus
+            print("Du drack kaffe och fick ",
+                  taget_item.hp_bonus, " hp, och ", taget_item.streangth_bonus, "styrka")
+        elif svar == "2":
+            list(1)
+            list.pop(1)
+        elif svar == "3":
+            list(2)
+            list.pop(2)
+        elif svar == "q":
+            return p1
+        return p1
+
+
+def mötmonster(p1):
+    print("du träffade på ett monster")
+    skeleton = Monster("skeleton", 5)
+
+    if p1.strength > skeleton.strength:
+        print("du vann och gick upp i level")
+        p1.lvl += 1
+
+    elif p1.strength < skeleton.strength:
+        print("du förlorade och tog ett skada")
+        p1.hp -= 10
+
+    return p1
+
+
+menu()
+
+print("gameover")
+
+svar = ""
+while svar != "q":
+    svar = input("\n vill du pröva igen? [y] Vill du avsluta [n]")
+    if svar == "y":
+        menu()
+
+    elif svar == "n":
+        print("Du förlorade")
